@@ -1,6 +1,6 @@
 # Distributed Training System with Federated Learning
 
-Bachelor's Thesis (TFG) project — Universitat de Lleida.
+Bachelor's Thesis (TFG) project — Universitat Oberta de Barcelona.
 
 This system trains neural networks across multiple machines using **Federated Averaging (FedAvg)**, a technique that allows collaborative model training without sharing raw data between nodes. Each node trains on its local data partition and only shares model weights with a central orchestrator, which aggregates them after every epoch.
 
