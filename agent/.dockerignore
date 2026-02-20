@@ -1,0 +1,43 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+
+# Entorns virtuals
+venv/
+env/
+.venv/
+
+# Git
+.git/
+.gitignore
+
+# IDE
+.vscode/
+.idea/
+
+# Tests
+tests/
+*_test.py
+test_*.py
+
+# Documentacio
+*.md
+docs/
+
+# Dades locals
+*.pt
+*.parquet
+datasets/
+models/
+
+# Logs
+*.log
+wandb/
+
+# Altres
+*.bat
+*.sh

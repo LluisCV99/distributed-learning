@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Orchestrator - Dashboard</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #e0e0e0;
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            color: #00d9ff;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        h2 {
+            color: #7c3aed;
+            margin: 1.5rem 0 1rem;
+            border-bottom: 1px solid #333;
+            padding-bottom: 0.5rem;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 1.5rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .card h3 {
+            color: #00d9ff;
+            margin-bottom: 0.5rem;
+        }
+
+        .card p {
+            color: #888;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .card .endpoint {
+            font-family: monospace;
+            color: #22c55e;
+            font-size: 0.85rem;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.2s;
+            margin-right: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .btn-primary {
+            background: #7c3aed;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #6d28d9;
+        }
+
+        .btn-success {
+            background: #22c55e;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #16a34a;
+        }
+
+        .btn-info {
+            background: #0ea5e9;
+            color: white;
+        }
+
+        .btn-info:hover {
+            background: #0284c7;
+        }
+
+        .btn-warning {
+            background: #f59e0b;
+            color: black;
+        }
+
+        .btn-warning:hover {
+            background: #d97706;
+        }
+
+        .status-panel {
+            background: rgba(0, 217, 255, 0.1);
+            border: 1px solid rgba(0, 217, 255, 0.3);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .status-panel h2 {
+            color: #00d9ff;
+            border: none;
+            margin-top: 0;
+        }
+
+        #output {
+            background: #0d1117;
+            border: 1px solid #30363d;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-top: 1rem;
+            max-height: 400px;
+            overflow-y: auto;
+            font-family: monospace;
+            font-size: 0.85rem;
+            white-space: pre-wrap;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #aaa;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #333;
+            border-radius: 6px;
+            background: #1a1a2e;
+            color: #e0e0e0;
+            font-size: 0.9rem;
+        }
+
+        .refresh-btn {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: #7c3aed;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 1.5rem;
+            box-shadow: 0 4px 15px rgba(124, 58, 237, 0.4);
+        }
+
+        .refresh-btn:hover {
+            background: #6d28d9;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Distributed Training Orchestrator</h1>
+
+        <div class="status-panel">
+            <h2>System Status</h2>
+            <div id="system-status">Loading...</div>
+        </div>
+
+        <h2>Monitoring</h2>
+        <div class="grid">
+            <div class="card">
+                <h3>Nodes</h3>
+                <p>Registered nodes</p>
+                <div class="endpoint">GET /nodes</div>
+                <button class="btn btn-info" onclick="callAPI('/nodes')">View Nodes</button>
+            </div>
+
+            <div class="card">
+                <h3>Overview</h3>
+                <p>Full system status</p>
+                <div class="endpoint">GET /monitor/overview</div>
+                <button class="btn btn-info" onclick="callAPI('/monitor/overview')">View Overview</button>
+            </div>
+
+            <div class="card">
+                <h3>Timeline</h3>
+                <p>Event history</p>
+                <div class="endpoint">GET /monitor/timeline</div>
+                <button class="btn btn-info" onclick="callAPI('/monitor/timeline')">View Timeline</button>
+            </div>
+
+            <div class="card">
+                <h3>Prometheus Metrics</h3>
+                <p>Metrics for scraping</p>
+                <div class="endpoint">GET /metrics</div>
+                <button class="btn btn-info" onclick="callAPI('/metrics', true)">View Metrics</button>
+            </div>
+        </div>
+
+        <h2>Datasets</h2>
+        <div class="grid">
+            <div class="card">
+                <h3>Dataset List</h3>
+                <p>Available datasets</p>
+                <div class="endpoint">GET /datasets</div>
+                <button class="btn btn-info" onclick="callAPI('/datasets')">View Datasets</button>
+            </div>
+
+            <div class="card">
+                <h3>Prepare MNIST</h3>
+                <p>Download and prepare MNIST automatically</p>
+                <div class="endpoint">POST /datasets/prepare-mnist</div>
+                <button class="btn btn-success" onclick="callAPIPost('/datasets/prepare-mnist')">Prepare MNIST</button>
+            </div>
+        </div>
+
+        <h2>Training</h2>
+        <div class="grid">
+            <div class="card">
+                <h3>Start Training</h3>
+                <p>Launch a new distributed training run</p>
+                <div class="form-group">
+                    <label>Dataset ID:</label>
+                    <input type="text" id="train-dataset" value="mnist" placeholder="mnist">
+                </div>
+                <div class="form-group">
+                    <label>Epochs:</label>
+                    <input type="number" id="train-epochs" value="5" min="1">
+                </div>
+                <div class="form-group">
+                    <label>Precision:</label>
+                    <select id="train-precision">
+                        <option value="fp32">fp32 (default)</option>
+                        <option value="fp16">fp16 (faster)</option>
+                    </select>
+                </div>
+                <button class="btn btn-primary" onclick="startTraining()">Start Training</button>
+            </div>
+
+            <div class="card">
+                <h3>Sync Status</h3>
+                <p>Per-epoch synchronization status</p>
+                <div class="endpoint">GET /sync/status</div>
+                <button class="btn btn-info" onclick="callAPI('/sync/status')">View Sync</button>
+            </div>
+        </div>
+
+        <h2>Models</h2>
+        <div class="grid">
+            <div class="card">
+                <h3>Saved Models</h3>
+                <p>Trained models available for download</p>
+                <div class="endpoint">GET /models</div>
+                <button class="btn btn-info" onclick="callAPI('/models')">View Models</button>
+            </div>
+        </div>
+
+        <h2>API Response</h2>
+        <pre id="output">Click a button to see the response...</pre>
+    </div>
+
+    <button class="refresh-btn" onclick="refreshStatus()" title="Refresh status">&#8635;</button>
+
+    <script>
+        async function callAPI(endpoint, plainText = false) {
+            const output = document.getElementById('output');
+            output.textContent = 'Loading...';
+            try {
+                const response = await fetch(endpoint);
+                if (plainText) {
+                    output.textContent = await response.text();
+                } else {
+                    const data = await response.json();
+                    output.textContent = JSON.stringify(data, null, 2);
+                }
+            } catch (e) {
+                output.textContent = 'Error: ' + e.message;
+            }
+        }
+
+        async function callAPIPost(endpoint, body = {}) {
+            const output = document.getElementById('output');
+            output.textContent = 'Sending...';
+            try {
+                const response = await fetch(endpoint, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(body)
+                });
+                const data = await response.json();
+                output.textContent = JSON.stringify(data, null, 2);
+                refreshStatus();
+            } catch (e) {
+                output.textContent = 'Error: ' + e.message;
+            }
+        }
+
+        async function startTraining() {
+            const dataset = document.getElementById('train-dataset').value || 'mnist';
+            const epochs = document.getElementById('train-epochs').value;
+            const precision = document.getElementById('train-precision').value;
+            const endpoint = `/train/${dataset}?epochs=${epochs}&precision=${precision}`;
+
+            const output = document.getElementById('output');
+            output.textContent = 'Starting training...';
+            try {
+                const response = await fetch(endpoint, { method: 'POST' });
+                const data = await response.json();
+                output.textContent = JSON.stringify(data, null, 2);
+                refreshStatus();
+            } catch (e) {
+                output.textContent = 'Error: ' + e.message;
+            }
+        }
+
+        async function refreshStatus() {
+            try {
+                const [healthRes, nodesRes, overviewRes] = await Promise.all([
+                    fetch('/health'),
+                    fetch('/nodes'),
+                    fetch('/monitor/overview')
+                ]);
+                const health = await healthRes.json();
+                const nodes = await nodesRes.json();
+                const overview = await overviewRes.json();
+
+                const statusHtml = `
+                    <strong>Service:</strong> ${health.status} | 
+                    <strong>Active nodes:</strong> ${nodes.length} | 
+                    <strong>Global state:</strong> ${overview.global_state || 'IDLE'} | 
+                    <strong>Current epoch:</strong> ${overview.current_epoch || 0}/${overview.total_epochs || 0}
+                `;
+                document.getElementById('system-status').innerHTML = statusHtml;
+            } catch (e) {
+                document.getElementById('system-status').textContent = 'Error loading status: ' + e.message;
+            }
+        }
+
+        refreshStatus();
+        setInterval(refreshStatus, 5000);
+    </script>
+</body>
+
+</html>

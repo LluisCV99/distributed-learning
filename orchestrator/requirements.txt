@@ -1,0 +1,11 @@
+fastapi
+uvicorn
+pydantic
+
+polars
+python-multipart
+torch
+torchvision
+wandb
+python-dotenv
+jinja2

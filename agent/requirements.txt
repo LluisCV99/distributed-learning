@@ -1,0 +1,7 @@
+requests
+psutil
+polars
+torch
+numpy
+wandb
+python-dotenv
